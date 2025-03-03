@@ -14,6 +14,7 @@ use App\Http\Controllers\back\ProvinsiController;
 use App\Http\Controllers\back\KeahlianController;
 use App\Http\Controllers\back\BPSController;
 use App\Http\Controllers\back\NotificationController;
+use App\Http\Controllers\back\MonevController;
 
 use App\Http\Controllers\Auth\KeycloakAuthController;
 use App\Http\Controllers\Auth\ExternalUserController;
@@ -90,6 +91,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/send-notification', [NotificationController::class, 'sendNotification']);
     Route::get('/notifications/unread-count/{email}', [NotificationController::class, 'unreadCount'])->name('notifications.unreadCount');
     Route::get('/notifications/{email}/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+    
+
+
+    // Route Monitoring dan Evaluasi
+    Route::resource('/monev', MonevController::class);
+    Route::get('/monevkonsultasi', [MonevController::class, 'monkonsultasi'])->name('monev.konsultasi');
+    Route::get('/monevpetugas', [MonevController::class, 'monpetugas'])->name('monev.petugas');
+    Route::get('/get-data-konsultasi', [MonevController::class, 'getDataKonsultasi']);
+    Route::get('/get-data-satker', [MonevController::class, 'getDataSatker']);
+    Route::get('/get-tahun', [MonevController::class, 'getTahun']);
+
+    Route::get('/get-data-konsultasi-group-satker', [MonevController::class, 'getDataBySatker']);
+
+    //3. 
+    Route::get('/monev-konsultasi-petugas', [MonevController::class, 'getKonsultasiPetugas'])->name('get.konsultasi.petugas');
+    Route::get('/get-detail-konsultasi/{id}', [MonevController::class, 'getDetailKonsultasi']);
+   
 
 });
 
