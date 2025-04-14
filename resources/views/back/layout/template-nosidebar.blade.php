@@ -72,7 +72,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/css/pages/page-auth.css')}}" />
     <!-- Helpers -->
     <script src="{{ asset('vendor/js/helpers.js')}}"></script>
-    {{-- <script src="{{ asset('js/datatable/jquery-3.7.1.js') }}"></script> --}}
+    <script src="{{ asset('js/datatable/jquery-3.7.1.js') }}"></script>
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
@@ -94,7 +94,7 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    {{-- <script src="{{asset('vendor/libs/jquery/jquery.js')}}"></script> --}}
+    <script src="{{asset('vendor/libs/jquery/jquery.js')}}"></script>
     
     <script src="{{asset('vendor/libs/popper/popper.js')}}"></script>
     <script src="{{asset('vendor/js/bootstrap.js')}}"></script>

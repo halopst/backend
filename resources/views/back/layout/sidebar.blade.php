@@ -200,6 +200,19 @@
         </ul>
       </li> --}}
       <!-- Components -->
+
+      @if(session('keycloak_user')['status']!='Operator')
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">Monitoring</span></li>
+        <!-- Cards -->
+        <li class="menu-item {{ (request()->segment(1) == 'monevkonsultasi') ? 'active' : '' }}">
+          <a href="{{url('monevkonsultasi/')}}" class="menu-link">
+          <i class="menu-icon tf-icons bx bx-collection"></i>
+            <div data-i18n="Basic">Evaluasi</div>
+          </a>
+        </li>
+      @endif
+
+
       @if(session('keycloak_user')['status']=='Admin' && session('keycloak_user')['id_satker']=='3500')
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Master</span></li>
         <!-- Cards -->
@@ -235,17 +248,7 @@
         </li>
       @endif
 
-      @if(session('keycloak_user')['status']=='Admin' && session('keycloak_user')['id_satker']=='3500')
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Monitoring</span></li>
-        <!-- Cards -->
-        <li class="menu-item {{ (request()->segment(1) == 'monevkonsultasi') ? 'active' : '' }}">
-          <a href="{{url('monevkonsultasi/')}}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
-            <div data-i18n="Basic">Evaluasi</div>
-          </a>
-        </li>
-      @endif
-
+  
 
       <!-- User interface -->
       {{-- <li class="menu-item">

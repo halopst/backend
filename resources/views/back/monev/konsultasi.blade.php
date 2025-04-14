@@ -58,7 +58,11 @@
               <div class="col-3">
                 <select class="form-select btn btn-sm btn-outline-primary" id="filter-tahun-2">
                   <option value ="" selected>-- Pilih Tahun --</option>
-                  
+                </select>
+              </div>
+              <div class="col-3">
+                <select class="form-select btn btn-sm btn-outline-primary" id="filter-bulan-2">
+                  <option value ="" selected>-- Pilih Bulan --</option>
                 </select>
               </div>
             </div>
@@ -85,13 +89,12 @@
                       <thead>
                           <tr>
                               <th>No</th>
-                              <th>Nama Petugas</th>
-                              <th>Nama Satker</th>
+                              <th>Nama</th>
+                              <th>Satker</th>
                               <th>Jumlah Konsultasi</th>
                               <th>Success Rate</th>
                               <th>Rata-rata Rating</th>
-                              
-                              <th>Aksi</th>
+                              <th></th>
                           </tr>
                       </thead>
                   </table>
@@ -167,8 +170,12 @@
             );
           // Looping data dan tambahkan ke select
           $.each(response, function (index, satker) {
+            let namaSatker = satker.nama_satker
+              .replace(/^BPS Provinsi /, '')  // Menghapus "BPS Provinsi " di awal
+              .replace(/^BPS Kabupaten /, '') // Menghapus "BPS Kabupaten " di awal
+              .replace(/^BPS /, '');          // Menghapus "BPS " untuk "BPS Kota"
             $("#filter-satker-1").append(
-              `<option value="${satker.id_satker}">${satker.nama_satker}</option>`
+              `<option value="${satker.id_satker}">${namaSatker}</option>`
             );
           });
         },
@@ -427,13 +434,23 @@
           type: "GET",
           data: { tahun: tahun },
           success: function(response) {
-              //console.log("Data Monev per Satker:", response);
+              // console.log("Data Monev per Satker:", response);
               if (response.length === 0) {
                   Swal.fire("Data Tidak Ditemukan", "Tidak ada data untuk tahun ini.", "warning");
                   return;
               }
+
+               // **Modifikasi Nama Satker: Hilangkan "BPS"**
+              let modifiedResponse = response.map(item => ({
+                  ...item,
+                  nama_satker: item.nama_satker
+                      .replace(/^BPS Provinsi /, '')  // Menghapus "BPS Provinsi "
+                      .replace(/^BPS Kabupaten /, '') // Menghapus "BPS Kabupaten "
+                      .replace(/^BPS /, '')           // Menghapus "BPS " (untuk "BPS Kota")
+              }));
+
               //3. Generate Chart
-              renderChart2(response);
+              renderChart2(modifiedResponse); 
           },
           error: function(xhr, status, error) {
               //console.error("Error:", error);
@@ -522,7 +539,7 @@
                 orderable: false, 
                 searchable: false,
                 render: function(data, type, row) {
-                return `<button class="btn btn-sm btn-outline-primary show-detail" data-id="${data}">
+                return `<button class="btn btn-sm btn-outline-primary show-detail" data-id="${data}" data-bs-toggle="tooltip" title="Detail">
                              <i class="fas fa-search"></i>
                         </button>`;
                 }
@@ -616,7 +633,7 @@
                       orderable: false, 
                       searchable: false,
                       render: function(data, type, row) {
-                          return `<a href="/konsultasi/${data}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                          return `<a href="/konsultasi/${data}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" title="Detail">
                                     <i class="fas fa-eye"></i>
                                 </a>`;
                           }
