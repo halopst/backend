@@ -2,8 +2,8 @@
 
 @push('css')
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"> --}}
-    <link rel="stylesheet" href="{{ asset('css/datatable/responsive.bootstrap5.css')}}">
-    <link rel="stylesheet" href="{{ asset('css/datatable/dataTables.bootstrap5.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/datatable/responsive.custom.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/datatable/dataTables.custom.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 @endpush
@@ -11,27 +11,25 @@
 @section('content')
 
 <div class="container-xxl flex-grow-1 container-p-y">
-  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Monitoring /</span> Konsultasi</h4>
-    
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Monitoring /</span> Evaluasi</h4>
+  
   <div class="card">
         <div class="card-body">
-            <div class="row">
-              <div class="col">
-                <h5 style="display: inline !important;color:#696cff"> Jumlah Konsultasi Menurut Bulan </h5> 
-                
-              </div>
-            </div>
+            <h5 class="card-title">Monitoring Konsultasi Bulanan</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Jumlah Konsultasi Berdasarkan Status, Waktu, Dan Satuan Kerja</h6>
             <div class="row justify-content-start">
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <select class="form-select btn btn-sm btn-outline-primary" id="filter-tahun-1">
-                  <option value ="" selected>-- Pilih Tahun --</option>
+                  <option value ="" selected disabled hidden>-- Pilih Tahun --</option>
                 </select>
               </div>
-              <div class="col-3">
+              @if(session('keycloak_user')['id_satker'] == '3500')
+              <div class="col-6 col-md-3">
                 <select class="form-select btn btn-sm btn-outline-primary" id="filter-satker-1">
-                  <option value ="" selected>-- Pilih Satker --</option>
+                  <option value ="" selected disabled hidden>-- Pilih Satker --</option>
                 </select>
               </div>
+              @endif
               <!-- <div class="col-2">
                 <button type="button" class="btn btn-primary" id="filter-tombol-card1">Terapkan</button>
               </div> -->
@@ -45,24 +43,33 @@
         </div>
     </div> 
   <br>
-
+  
   <div class="card">
         <div class="card-body">
-            <div class="row">
-              <div class="col">
-                <h5 style="display: inline !important;color:#696cff">Status Konsultasi Menurut Satuan Kerja </h5> 
-                <br>
-              </div>
-            </div>
+            <h5 class="card-title">Status Konsultasi Menurut Satuan Kerja</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Data Konsultasi Berdasarkan Status Menurut Satuan Kerja Pada Tahun Dan Bulan Tertentu</h6>
             <div class="row justify-content-start">
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <select class="form-select btn btn-sm btn-outline-primary" id="filter-tahun-2">
-                  <option value ="" selected>-- Pilih Tahun --</option>
+                  <option value ="" selected disabled hidden>-- Pilih Tahun --</option>
                 </select>
               </div>
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <select class="form-select btn btn-sm btn-outline-primary" id="filter-bulan-2">
-                  <option value ="" selected>-- Pilih Bulan --</option>
+                  <option value="" selected disabled hidden>-- Pilih Bulan --</option>
+                  <option value="01">Januari</option>
+                  <option value="02">Februari</option>
+                  <option value="03">Maret</option>
+                  <option value="04">April</option>
+                  <option value="05">Mei</option>
+                  <option value="06">Juni</option>
+                  <option value="07">Juli</option>
+                  <option value="08">Agustus</option>
+                  <option value="09">September</option>
+                  <option value="10">Oktober</option>
+                  <option value="11">November</option>
+                  <option value="12">Desember</option>
+                  <option value="">Tahunan</option>
                 </select>
               </div>
             </div>
@@ -163,10 +170,10 @@
           //console.log("Data Satker:", response);
           
           // Kosongkan dulu select sebelum menambahkan data baru
-          $("#filter-satker-1").empty().append('<option value="">-- Pilih Satker --</option>');
+          $("#filter-satker-1").empty().append('<option value="" selected disabled hidden>-- Pilih Satker --</option>');
 
           $("#filter-satker-1").append(
-              `<option value="">Seluruh Satker</option>`
+              `<option value="" selected>Seluruh Satker</option>`
             );
           // Looping data dan tambahkan ke select
           $.each(response, function (index, satker) {
@@ -195,8 +202,8 @@
           //console.log("Daftar Tahun:", response); // Cek di console
 
           // Kosongkan dulu select sebelum menambahkan data baru
-          $("#filter-tahun-1").empty().append('<option value="">-- Pilih Tahun --</option>');
-          $("#filter-tahun-2").empty().append('<option value="">-- Pilih Tahun --</option>');
+          $("#filter-tahun-1").empty().append('<option value="" selected disabled hidden>-- Pilih Tahun --</option>');
+          $("#filter-tahun-2").empty().append('<option value="" selected disabled hidden>-- Pilih Tahun --</option>');
 
           // Tambahkan setiap tahun ke dalam select
           $.each(response, function (index, tahun) {
@@ -246,7 +253,7 @@
         ],
         chart: { type: "bar", height: 400 },
         xaxis: { categories: categories },
-        colors: ["#ffc107", "#0dcaf0", "#20c997", "#dc3545"],
+        colors: ["#ffc107", "#3498db", "#2ecc71", "#c0392b"],
         tooltip: {
             y: {
                 formatter: function (val) {
@@ -399,9 +406,6 @@
                 stacked : true,
                 height: 800
             },
-            legend: {
-              position: 'top'
-            },
             series: [
                 { name: "Diajukan", data: diajukan },
                 { name: "Disetujui", data: disetujui },
@@ -416,7 +420,7 @@
             xaxis: {
                 categories: categories
             },
-            colors: ["#ffc107", "#0dcaf0", "#20c997", "#dc3545"]
+            colors: ["#ffc107", "#3498db", "#2ecc71", "#c0392b"]
         };
 
         if (window.chart2 && typeof window.chart2.destroy === "function") {
@@ -428,11 +432,14 @@
     }
 
     //2. Fetch Data
-    function fetchMonevDataBySatker(tahun) {
+    function fetchMonevDataBySatker(tahun,bulan) {
       $.ajax({
           url: "/get-data-konsultasi-group-satker", // Sesuaikan dengan endpoint
           type: "GET",
-          data: { tahun: tahun },
+          data: { 
+            tahun: tahun,
+            bulan: bulan
+          },
           success: function(response) {
               // console.log("Data Monev per Satker:", response);
               if (response.length === 0) {
@@ -461,8 +468,15 @@
     //4. Event Listener Kalau Filter Berubah
     $('#filter-tahun-2').on('change', function() {
         let tahun = $(this).val();
+        let bulan = $('#filter-bulan-2').val();
         event.preventDefault(); // Mencegah reload halaman
-        fetchMonevDataBySatker(tahun);
+        fetchMonevDataBySatker(tahun,bulan);
+    });
+    $('#filter-bulan-2').on('change', function() {
+        let tahun = $('#filter-tahun-2').val();
+        let bulan = $(this).val();
+        event.preventDefault(); // Mencegah reload halaman
+        fetchMonevDataBySatker(tahun,bulan);
     });
 
     /* SELESAI CHART 2 */
@@ -550,6 +564,12 @@
 
     //5. Event Listener untuk tombol Lihat Detail
     $(document).on('click', '.show-detail', function() {
+      let modalWidth;
+      if (window.innerWidth >= 1440) {
+        modalWidth = '60vw';
+      } else {
+        modalWidth = '80vw';
+      }
       let petugasId = $(this).data('id'); 
 
       Swal.fire({
@@ -567,7 +587,7 @@
                       </thead>
                       <tbody></tbody>
                 </table>`,
-          width: '60%',
+          width: modalWidth,
           didOpen: () => {
               $('#modalTable').DataTable({
                   processing: true,

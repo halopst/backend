@@ -57,19 +57,40 @@ class Monev extends Model
 
 
     // untuk grafik kedua
-    public static function getMonevDataBySatker($tahun)
+    public static function getMonevDataBySatker($tahun, $bulan)
     {
-    return self::selectRaw("
+        // return self::selectRaw("
+        //     s.nama_satker,
+        //     COUNT(*) as total_konsultasi,
+        //     SUM(CASE WHEN k.status = 'Diajukan' THEN 1 ELSE 0 END) as diajukan,
+        //     SUM(CASE WHEN k.status = 'Disetujui' THEN 1 ELSE 0 END) as disetujui,
+        //     SUM(CASE WHEN k.status = 'Selesai' THEN 1 ELSE 0 END) as selesai,
+        //     SUM(CASE WHEN k.status = 'Dibatalkan' THEN 1 ELSE 0 END) as dibatalkan
+        // ")
+        // ->from('konsultasis as k')
+        // ->join('satkers as s', 'k.id_satker', '=', 's.id_satker')
+        // ->whereYear('tanggal_konsultasi', $tahun)
+        // ->groupBy('s.nama_satker')
+        // ->orderBy('total_konsultasi', 'DESC')
+        // ->get();
+
+        return \DB::table('satkers as s')
+        ->leftJoin('konsultasis as k', function ($join) use ($tahun, $bulan) {
+            $join->on('k.id_satker', '=', 's.id_satker')
+                ->whereYear('k.tanggal_konsultasi', '=', $tahun);
+
+            if ($bulan) {
+                $join->whereMonth('k.tanggal_konsultasi', '=', $bulan);
+            }
+        })
+        ->selectRaw("
             s.nama_satker,
-            COUNT(*) as total_konsultasi,
+            COUNT(k.id) as total_konsultasi,
             SUM(CASE WHEN k.status = 'Diajukan' THEN 1 ELSE 0 END) as diajukan,
             SUM(CASE WHEN k.status = 'Disetujui' THEN 1 ELSE 0 END) as disetujui,
             SUM(CASE WHEN k.status = 'Selesai' THEN 1 ELSE 0 END) as selesai,
             SUM(CASE WHEN k.status = 'Dibatalkan' THEN 1 ELSE 0 END) as dibatalkan
         ")
-        ->from('konsultasis as k')
-        ->join('satkers as s', 'k.id_satker', '=', 's.id_satker')
-        ->whereYear('tanggal_konsultasi', $tahun)
         ->groupBy('s.nama_satker')
         ->orderBy('total_konsultasi', 'DESC')
         ->get();
