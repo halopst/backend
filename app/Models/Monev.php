@@ -106,25 +106,26 @@ class Monev extends Model
 
     // Untuk Tabel ketiga
 
-    public static function getKonsultasiByPetugas()
+    public static function getKonsultasiByPetugas($idSatker = null)
     {
-        return DB::table('konsultasis')
-            ->join('petugas', 'konsultasis.id_petugas', '=', 'petugas.id')
-            ->join('satkers', 'konsultasis.id_satker', '=', 'satkers.id_satker')
-            ->select(
-                'petugas.id as id_petugas',
-                'petugas.nama_petugas',
-                'satkers.nama_satker',
-                DB::raw('COUNT(konsultasis.id) as total_konsultasi'),
-                DB::raw('SUM(CASE WHEN konsultasis.status = "Selesai" THEN 1 ELSE 0 END) / COUNT(konsultasis.id) * 100 as success_rate'),
-                DB::raw('AVG(konsultasis.rating) as rata_rata_rating')
-            )
-            ->groupBy('petugas.id', 'petugas.nama_petugas', 'satkers.nama_satker')
-            ->orderByDesc('total_konsultasi')
-            ->get();
-
-        
-        }
+        return DB::table('petugas')
+        ->leftJoin('konsultasis', 'petugas.id', '=', 'konsultasis.id_petugas')
+        ->leftJoin('satkers', 'petugas.id_satker', '=', 'satkers.id_satker')
+        ->select(
+            'petugas.id as id_petugas',
+            'petugas.nama_petugas',
+            'satkers.nama_satker',
+            DB::raw('COUNT(konsultasis.id) as total_konsultasi'),
+            DB::raw('SUM(CASE WHEN konsultasis.status = "Selesai" THEN 1 ELSE 0 END) / NULLIF(COUNT(konsultasis.id), 0) * 100 as success_rate'),
+            DB::raw('AVG(konsultasis.rating) as rata_rata_rating')
+        )
+        ->when($idSatker, function ($query) use ($idSatker) {
+            return $query->where('satkers.id_satker', $idSatker);
+        })
+        ->groupBy('petugas.id', 'petugas.nama_petugas', 'satkers.nama_satker')
+        ->orderByDesc('total_konsultasi')
+        ->get();
+    }
 
     public static function getDetailKonsultasiByPetugas($id)
     {

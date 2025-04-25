@@ -45,7 +45,14 @@ class MonevController extends Controller
      public function getDataKonsultasi(Request $request)
      {
          $tahun = $request->query('tahun', date('Y'));
-         $idSatker = $request->query('id_satker', null);
+         $sessionSatker = session('keycloak_user')['id_satker'];
+         
+         if ($sessionSatker !== '3500') {
+            $idSatker = $sessionSatker;
+        } else {
+            // Admin pusat bisa bebas memilih satker via query
+            $idSatker = $request->query('id_satker', null);
+        }
  
          $data = Monev::getMonevDataKonsultasi($tahun, $idSatker);
  
@@ -67,8 +74,9 @@ class MonevController extends Controller
     public function getDataBySatker(Request $request)
     {
         $tahun = $request->input('tahun');
+        $bulan = $request->input('bulan');
     
-        $data = Monev::getMonevDataBySatker($tahun);
+        $data = Monev::getMonevDataBySatker($tahun,$bulan);
     
         return response()->json($data);
     }
@@ -79,15 +87,23 @@ class MonevController extends Controller
     */
     public function getKonsultasiPetugas(Request $request)
     {
-        
-        if ($request->ajax()) {
-            $data = Monev::getKonsultasiByPetugas();
-            return DataTables::of($data)
-                ->addIndexColumn() // Menambahkan DT_RowIndex secara otomatis
-                ->make(true);
-
-            
+        $idSatker = session('keycloak_user')['id_satker'];
+        if ($idSatker !== '3500'){
+            if ($request->ajax()) {
+                $data = Monev::getKonsultasiByPetugas($idSatker);
+                return DataTables::of($data)
+                    ->addIndexColumn() // Menambahkan DT_RowIndex secara otomatis
+                    ->make(true);
+            }
+        }else{
+            if ($request->ajax()) {
+                $data = Monev::getKonsultasiByPetugas();
+                return DataTables::of($data)
+                    ->addIndexColumn() // Menambahkan DT_RowIndex secara otomatis
+                    ->make(true);
+            }
         }
+        
     }    
 
     public function getDetailKonsultasi($id)
