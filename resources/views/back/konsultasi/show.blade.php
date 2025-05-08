@@ -33,7 +33,7 @@
                 <div class="row mb-2">
                     <label class="col-sm-3 col-form-label" for="basic-default-name">Link Meeting</label>
                     <label class="col-sm-1 col-form-label" for="basic-default-name">:</label>
-                    <div class="col-sm-8 mt-1"><a href="http://{{$konsultasi->link_meeting}}"> {{$konsultasi->link_meeting}}</a></div>
+                    <div class="col-sm-8 mt-1"><a href="{{$konsultasi->link_meeting}}" target="_blank"> {{$konsultasi->link_meeting}}</a></div>
                 </div>
                 <div class="row mb-2">
                     <label class="col-sm-3 col-form-label" for="basic-default-name">Status</label>
@@ -164,9 +164,10 @@
 <script src="{{ asset('js/rateyo/jquery.rateyo.min.js')}}"></script>
 <script>
     $(function () {
- 
+        
         $("#rateYo").rateYo({
             rating: {{$konsultasi->rating}},
+            maxValue : 10,
             readOnly: true
         });
         });
