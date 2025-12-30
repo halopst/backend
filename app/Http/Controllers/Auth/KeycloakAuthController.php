@@ -81,8 +81,8 @@ class KeycloakAuthController extends Controller
             
         }
 
-        //dd($keycloakUser->user->name);
-        // dd('lanjut');
+        dd($keycloakUser->user->name);
+        dd('lanjut');
         return User::create([
             'name' => $keycloakUser->getName(),
             'email' => $keycloakUser->getEmail(),

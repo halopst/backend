@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ asset('css/datatable/responsive.custom.css')}}">
     <link rel="stylesheet" href="{{ asset('css/datatable/dataTables.custom.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome-4.7.0/css/font-awesome.min.css')}}">
 
 @endpush
 
@@ -14,7 +15,7 @@
   
   <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Monitoring Konsultasi Bulanan</h5>
+            <h5 class="card-title" style="color:#696cff">Monitoring Konsultasi Bulanan</h5>
             <h6 class="card-subtitle mb-2 text-muted">Jumlah Konsultasi Berdasarkan Status, Waktu, Dan Satuan Kerja</h6>
             <div class="row justify-content-start">
               <div class="col-6 col-md-3">
@@ -45,7 +46,7 @@
   
   <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Status Konsultasi Menurut Satuan Kerja</h5>
+            <h5 class="card-title"style="color:#696cff">Status Konsultasi Menurut Satuan Kerja</h5>
             <h6 class="card-subtitle mb-2 text-muted">Data Konsultasi Berdasarkan Status Menurut Satuan Kerja Pada Tahun Dan Bulan Tertentu</h6>
             <div class="row justify-content-start">
               <div class="col-6 col-md-3">
@@ -127,6 +128,12 @@
 <script src="{{ asset('js/datatable/responsive.bootstrap5.js')}}"></script>
 <script src="{{ asset('sweetalert/sweetalert2@11')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.41.0"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
 
 
 <script>
@@ -241,7 +248,16 @@
     //1. Fungsi Chart 1
     function renderChart1(categories, diajukan, disetujui, selesai, dibatalkan) {
 
-      
+        // Ambil waktu sekarang
+        const now = new Date();
+        const waktuSekarang = now.toLocaleString('id-ID', {
+            // weekday: 'long', // misalnya: "Senin"
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
       
       var options = {
         series: [
@@ -250,6 +266,26 @@
             { name: "Selesai", data: selesai },
             { name: "Dibatalkan", data: dibatalkan }
         ],
+        title: {
+            text: "Jumlah Konsultasi HaloPST Menurut Bulan Dan Status",
+            align: "center",  // bisa 'left', 'center', atau 'right'
+            margin: 0,
+            offsetY: 30,
+            style: {
+                fontSize: '20px',
+                fontWeight: 'bold',
+                color: '#263238'
+            }
+        },
+        subtitle: {
+            text: `Kondisi data ${waktuSekarang} WIB`,
+            align: "center",
+            offsetY: 50,
+            style: {
+                fontSize: '11px',
+                color: '#666'
+            }
+        },
         chart: { type: "bar", height: 400 },
         xaxis: { categories: categories },
         colors: ["#ffc107", "#3498db", "#2ecc71", "#c0392b"],
@@ -353,13 +389,11 @@
       });
 
 
-      //4. Event Listener Kalau Filter Berubah
-      
-
-
       
 
     }
+
+    //4. Event Listener Kalau Filter Berubah 
     
     $('#filter-tahun-1').on('change', function() {
         let tahun = $(this).val();
@@ -393,6 +427,18 @@
 
     //1. Fungsi Chart 2
     function renderChart2(data) {
+        
+        // Ambil waktu sekarang
+        const now = new Date();
+        const waktuSekarang = now.toLocaleString('id-ID', {
+            // weekday: 'long', // misalnya: "Senin"
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
         let categories = data.map(item =>  item.nama_satker);
         let diajukan = data.map(item => item.diajukan);
         let disetujui = data.map(item => item.disetujui);
@@ -405,6 +451,34 @@
                 stacked : true,
                 height: 800
             },
+            export:{
+                svg: {
+                    filename: "ASDFGHJKLKJJGG",
+                },
+                png: {
+                    filename: "ASDFGHJKLKJJGG",
+                }
+            },
+            title: {
+                text: "Jumlah Konsultasi HaloPST Menurut Satuan Kerja Dan Status",
+                align: "center",  // bisa 'left', 'center', atau 'right'
+                margin: 0,
+                offsetY: 30,
+                style: {
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    color: '#263238'
+                }
+            },
+            subtitle: {
+                text: `Kondisi data ${waktuSekarang} WIB`,
+                align: "center",
+                offsetY: 50,
+                style: {
+                    fontSize: '11px',
+                    color: '#666'
+                }
+            },
             series: [
                 { name: "Diajukan", data: diajukan },
                 { name: "Disetujui", data: disetujui },
@@ -413,6 +487,7 @@
             ],
             plotOptions:{
               bar :{
+                offsetY: 30,
                 horizontal:true
               }
             },
@@ -482,6 +557,32 @@
 
 
     $('#konsultasiTable').DataTable({
+          layout: {
+            topStart: {
+                buttons: [
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i>',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fa fa-file-text-o"></i>',
+                        titleAttr: 'CSV'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        titleAttr: 'PDF'
+                    }
+                ]
+            }
+        },
         processing: true,
         serverSide: true,
         ajax: {
