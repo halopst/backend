@@ -26,37 +26,37 @@ class KonsultasiController extends Controller
         //print_r($konsultasi);
         //
         if(request()->ajax()){
-            $konsultasi=[];
-            //dd(session('keycloak_user'));
-            if(session('keycloak_user')['id_satker']=='3500' && session('keycloak_user')['status']=='Admin'){
-                $konsultasi=Konsultasi::with('pengguna','petugas')->latest()->get();
+            $user = session('keycloak_user') ?? [];
+
+            if(isset($user['id_satker']) && isset($user['status']) && $user['id_satker']=='3500' && $user['status']=='Admin'){
+                $query = Konsultasi::with('pengguna','petugas')->latest();
             }
-            else if(session('keycloak_user')['status']=='Operator'){
-                $konsultasi=Konsultasi::with(['pengguna', 'petugas' => function($query) {
-                    $query->where('id_satker', session('keycloak_user')['id_satker']);
-                }])->whereHas('petugas', function($query) {
-                    $query
-                        ->where('id_satker', session('keycloak_user')['id_satker'])
-                        ->where('id', session('keycloak_user')['id_petugas']);
-                })->latest()->get();
+            else if(isset($user['status']) && $user['status']=='Operator'){
+                $query = Konsultasi::with(['pengguna', 'petugas' => function($q) use ($user) {
+                    $q->where('id_satker', $user['id_satker']);
+                }])->whereHas('petugas', function($q) use ($user) {
+                    $q->where('id_satker', $user['id_satker'])
+                      ->where('id', $user['id_petugas']);
+                })->latest();
             }
             else{
-                $konsultasi=Konsultasi::with(['pengguna', 'petugas' => function($query) {
-                    $query->where('id_satker', session('keycloak_user')['id_satker']);
-                }])->whereHas('petugas', function($query) {
-                    $query->where('id_satker', session('keycloak_user')['id_satker']);
-                })->latest()->get();
+                $query = Konsultasi::with(['pengguna', 'petugas' => function($q) use ($user) {
+                    if(isset($user['id_satker'])) $q->where('id_satker', $user['id_satker']);
+                }])->when(isset($user['id_satker']), function($q) use ($user) {
+                    return $q->whereHas('petugas', function($q2) use ($user) {
+                        $q2->where('id_satker', $user['id_satker']);
+                    });
+                })->latest();
             }
 
-            //dd($konsultasi);
-           
-            return DataTables::of($konsultasi)
+            // Use builder (server-side processing) so DB handles paging/ordering
+            return DataTables::eloquent($query->select('konsultasis.*'))
             ->addIndexColumn()
             ->addColumn('id_pengguna', function($konsultasi){
-                return $konsultasi->Pengguna->nama_pengguna;
+                return $konsultasi->pengguna ? $konsultasi->pengguna->nama_pengguna : '';
             })
             ->addColumn('id_petugas', function($konsultasi){
-                return $konsultasi->Petugas->nama_petugas;
+                return $konsultasi->petugas ? $konsultasi->petugas->nama_petugas : '';
             })
             ->addColumn('aksi', function($konsultasi){
                 $button='
