@@ -143,8 +143,8 @@ class KonsultasiController extends Controller
                                 >
                         </li>
                         <li>
-                            <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"
-                            ><i class="bx bx-message-edit scaleX-n1-rtl"></i>&nbsp Laporan</a>
+                            <a href="'.$konsultasi->link_bukti.'" target="_blank" rel="noopener noreferrer" class="dropdown-item d-flex align-items-center"
+                            ><i class="bx bx-message-edit scaleX-n1-rtl"></i>&nbsp Bukti Dukung</a>
                         </li>';
                     }
                     
