@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var jumlahKonsultasiPerBulan = JSON.parse(document.getElementById('profileReportChart').getAttribute('data-konsultasi-per-bulan'));
     var bulanKonsultasi = JSON.parse(document.getElementById('profileReportChart').getAttribute('bulan-konsultasi'));
   
-    console.log(jumlahKonsultasiPerBulan);
+    // console.log(jumlahKonsultasiPerBulan);
     let cardColor, headingColor, axisColor, shadeColor, borderColor;
 
     cardColor = config.colors.white;
