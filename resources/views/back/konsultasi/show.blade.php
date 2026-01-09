@@ -124,7 +124,7 @@
                     <div class="col-sm-8 mt-1"> {{$konsultasi->Pengguna->pendidikan}}</div>
                 </div>
                 <div class="row mb-2">
-                    <label class="col-sm-3 col-form-label" for="basic-default-name">Pendidikan</label>
+                    <label class="col-sm-3 col-form-label" for="basic-default-name">Nomor</label>
                     <label class="col-sm-1 col-form-label" for="basic-default-name">:</label>
                     <div class="col-sm-8 mt-1"> {{$konsultasi->Pengguna->nmr_telp}}</div>
                 </div>
