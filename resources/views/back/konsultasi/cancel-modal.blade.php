@@ -14,21 +14,19 @@
             <hr class="my-1" />
             <div class="modal-body">
                 <div class="alert alert-primary" role="alert">
-                    Tuliskan Alasan Pembatalan Konsultasi. Alasan Tersebut akan dikirimkan kepada pengguna data melalui email
+                    Pilih Alasan Pembatalan Konsultasi. Alasan Tersebut akan dikirimkan kepada pengguna data melalui email
                 </div>
-                <div class="mb-1">
-                    {{-- <label class="form-label" for="basic-icon-default-message">Message</label> --}}
-                    <div class="input-group input-group-mege">
-                      <span id="basic-icon-default-message2" class="input-group-text"><i class="bx bx-comment"></i></span>
-                      <textarea 
-                        id="alasan-pembatalan-cancel" 
-                        class="form-control" 
-                        placeholder="Tuliskan alasan pembatalan disini . . ." 
-                        aria-label="Tuliskan alasan pembatalan disini . . ." 
-                        aria-describedby="basic-icon-default-message2"></textarea>
+                    <div class="mb-1">
+                            <div class="input-group input-group-mege">
+                                <span id="basic-icon-default-message2" class="input-group-text"><i class="bx bx-comment"></i></span>
+                                <select id="alasan-pembatalan-cancel" class="form-select">
+                                    <option value="" selected disabled>Pilih alasan pembatalan...</option>
+                                    <option value="duplikat permohonan konsultasi">Duplikat permohonan konsultasi</option>
+                                    <option value="pengguna layanan tidak hadir pada jadwal konsultasi">Pengguna layanan tidak hadir pada jadwal konsultasi</option>
+                                </select>
+                            </div>
+                            <div class="invalid-feedback"></div>
                     </div>
-                    <div class="invalid-feedback"></div>
-                  </div>
 
                 {{-- <div class="row">
                     <label class="col-sm-3 col-form-label" for="basic-icon-default-fullname">Alasan Pembatalan</label>
