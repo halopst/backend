@@ -150,7 +150,8 @@ class KonsultasiController extends Controller
                 'subject'=>'Reservasi Konsultasi',
                 'penerima'=>$petugas['nama_petugas'],
                 'message' => '<p>Ada Permintaan Konsultasi Kepada Anda Pada Aplikasi HaloPST, sebagai berikut : '.'</p>'.
-                    '&emsp;Nama Konsuman : '.$pengguna['nama_pengguna'].'<br>'.
+                    '&emsp;Nama Konsumen : '.$pengguna['nama_pengguna'].'<br>'.
+                    '&emsp;Nomor Konsumen : '.$pengguna['nmr_telp'].'<br>'.
                     '&emsp;Topik Diskusi : '.$request->topik_diskusi.'<br>'. 
                     '&emsp;Tanggal &emsp;&nbsp;: '. $request->tanggal_konsultasi.'<br>'.
                     '<p>&emsp;Waktu   &emsp;&emsp;: '. $request->waktu_konsultasi.' </p>
@@ -178,6 +179,7 @@ class KonsultasiController extends Controller
                 'Hallo *'.$petugas['nama_petugas'].'*'."\r\n".
                 'Ada Permintaan Konsultasi : '."\r\n".
                 ' Nama Konsumen : '.$pengguna['nama_pengguna']."\r\n".
+                ' Nomor Konsumen : '.$pengguna['nmr_telp']."\r\n".
                 ' Topik diskusi : '.$request->topik_diskusi."\r\n".
                 ' Tanggal : '.$request->tanggal_konsultasi."\r\n".
                 ' Waktu :  '. $request->waktu_konsultasi."\r\n".
@@ -297,6 +299,26 @@ class KonsultasiController extends Controller
 
         $konsultasi = Konsultasi::with('petugas')
             ->where('status', 'diajukan')
+            ->where(function($query) use ($now, $thirtyMinutesLater) {
+                $query->where('tanggal_konsultasi', '=', $now->toDateString())
+                  ->whereBetween('waktu_konsultasi', [$now->toTimeString(), $thirtyMinutesLater->toTimeString()]);
+                //   ->orWhere('tanggal_konsultasi', '>', $now->toDateString());
+            })
+        ->get();
+        // dd($konsultasi);
+        return new KonsultasiResource(true, 'Daftar konsultasi', $konsultasi);
+
+    }
+
+    public function getKonsultasiReminder(){
+        date_default_timezone_set('Asia/Jakarta');
+    // echo date("Y-m-d H:i:s");
+        $now = Carbon::now();
+        // echo ($now);
+        $thirtyMinutesLater = $now->copy()->addMinutes(30);
+
+        $konsultasi = Konsultasi::with('petugas')
+            ->where('status', 'disetujui')
             ->where(function($query) use ($now, $thirtyMinutesLater) {
                 $query->where('tanggal_konsultasi', '=', $now->toDateString())
                   ->whereBetween('waktu_konsultasi', [$now->toTimeString(), $thirtyMinutesLater->toTimeString()]);
