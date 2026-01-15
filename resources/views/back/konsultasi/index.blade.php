@@ -215,11 +215,27 @@
 
       function openCancelModal(id){
         // console.log('open');
-          $('#cancelKonsultasiModal').modal('show');
-          $('#btt-submit-cancel').attr('data-id',id)
-          $('#alasan-pembatalan').attr('class','form-control');
-          $('.invalid-feedback').html('');
-          $(".invalid-feedback").css("display", "none");
+          $.ajax({
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              type:'POST',
+              url:'{{ config('app.url') }}get-konsultasi',
+              dataType:"json",
+              data:{id:id},
+              success: function(response){
+                let scheduleDate = response.konsultasi.tanggal_konsultasi;
+                let scheduleTime = response.konsultasi.waktu_konsultasi.substring(0, 5);
+                
+                $('#cancelKonsultasiModal').modal('show');
+                $('#btt-submit-cancel').attr('data-id',id);
+                $('#btt-submit-cancel').attr('data-schedule-date', scheduleDate);
+                $('#btt-submit-cancel').attr('data-schedule-time', scheduleTime);
+                $('#alasan-pembatalan').attr('class','form-control');
+                $('.invalid-feedback').html('');
+                $(".invalid-feedback").css("display", "none");
+              }
+            });
       }
 
       function openFinishModal(id){
