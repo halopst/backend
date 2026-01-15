@@ -30,6 +30,7 @@ Route::get('daftar-kirim-notif-wa', [WhatsappController::class,'getDaftarKirim']
 Route::get('set-read-notif-wa/{id}', [WhatsappController::class,'setReadNotifWA']);
 
 Route::get('get-konsultasi-notif', [KonsultasiController::class,'getKonsultasiNotif']);
+Route::get('get-konsultasi-reminder', [KonsultasiController::class,'getKonsultasiReminder']);
 Route::get('set-konsultasi-notif/{id_konsultasi}/kd_notif/{kd_notif}', [KonsultasiController::class,'setNotifKonsultasi']);
 
 Route::get('isi-uuid', [KonsultasiController::class,'isiuuid']);
