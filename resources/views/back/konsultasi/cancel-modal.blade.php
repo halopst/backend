@@ -70,14 +70,53 @@
     function batalKonsultasi(e){
         //console.log(e.getAttribute('data-id'));
         let id=e.getAttribute('data-id');
+        let scheduleDate=e.getAttribute('data-schedule-date');
+        let scheduleTime=e.getAttribute('data-schedule-time');
         let alasanPembatalan=$('#alasan-pembatalan-cancel').val();
-        console.log(alasanPembatalan);
+        // console.log(alasanPembatalan);
         if(alasanPembatalan==""){
             console.log('Kosong alasan pembatalannya');
             $('.invalid-feedback').html('Alasan pembatalan harus diisi');
             $('.invalid-feedback').css('display','block');
             $('#alasan-pembatalan-cancel').attr('class','form-control is-invalid');
         }else{
+            // Check if current time is after schedule time + 15 minutes
+            // Only applies for "pengguna layanan tidak hadir pada jadwal konsultasi" reason
+            if(alasanPembatalan === "pengguna layanan tidak hadir pada jadwal konsultasi" && scheduleDate && scheduleTime){
+                let scheduleDateTimeString = scheduleDate + ' ' + scheduleTime;
+                let scheduleDateTime = new Date(scheduleDateTimeString);
+                let cancelDeadline = new Date(scheduleDateTime.getTime() + 15 * 60000); // Add 15 minutes
+                let now = new Date();
+                
+                if(now < cancelDeadline){
+                    let formattedSchedule = scheduleDateTime.toLocaleString('id-ID', { 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    let formattedDeadline = cancelDeadline.toLocaleString('id-ID', { 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    
+                    $('#cancelKonsultasiModal').modal('toggle');
+                    
+                    Swal.fire({
+                        title: "Tidak Dapat Dibatalkan",
+                        html: "Konsultasi dijadwalkan pada <strong>" + formattedSchedule + "</strong><br/>" +
+                              "Pembatalan hanya dapat dilakukan setelah <strong>" + formattedDeadline + "</strong>",
+                        icon: "warning",
+                        showConfirmButton: true
+                    });
+                    return;
+                }
+            }
+            
             $('#cancelKonsultasiModal').modal('toggle');
             console.log('jalankan batalkan');
             Swal.fire({
